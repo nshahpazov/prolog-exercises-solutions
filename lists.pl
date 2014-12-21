@@ -16,7 +16,9 @@ lastbutone([_|T], X) :- lastbutone(T, X).
 
 % finds the kth element of a list
 kth(H, [H|_], 0).
-kth(X, [H|T], K) :- K > 0, K1 is K - 1, kth(X, T, K1).
+kth(X, [H|T], K) :- K > 0,
+  K1 is K - 1,
+  kth(X, T, K1).
 
 % finds the length of a list
 length2([], 0).
@@ -58,6 +60,12 @@ ns(X, [X], 1).
 ns(X, Y, K) :- K > 0, K1 is K - 1, append([X], Z, Y), ns(X, Z, K1).
 
 % sublists of duplicates
+sublist_dupl([], []).
+sublist_dupl([H|T], [H1|T1]) :- ns(H, H1, 2), sublist_dupl(T, T1).
+
+%duplicates
 dupl([], []).
-dupl([H|T], [H1|T1]) :- ns(H, H1, 2), dupl(T, T1).
+dupl([H|T], R) :- append(X, Y, R), ns(H, X, 3),
+  dupl(T, Y).
+
 
