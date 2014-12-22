@@ -16,7 +16,7 @@ lastbutone([_|T], X) :- lastbutone(T, X).
 
 % finds the kth element of a list
 kth(H, [H|_], 0).
-kth(X, [H|T], K) :- K > 0,
+kth(X, [_|T], K) :- K > 0,
   K1 is K - 1,
   kth(X, T, K1).
 
@@ -29,12 +29,13 @@ rev([], []).
 rev([H|T], X) :- rev(T, Y), append(Y, [H], X).
 
 % finds out whether a list is palindrome
-palindrome(L) :-reverse(L, L).
+palindrome(L) :- reverse(L, L).
 
 % flattens a list
 flatt(X, [X]) :- not(is_list(X)). % if its not a list make it a list so that it can be appended later
 flatt([], []).
-flatt([H|T], X) :- flatt(H, Y), flatt(T, Z), append(Y, Z, X).
+flatt([H|T], X) :- flatt(H, Y), flatt(T, Z),
+  append(Y, Z, X).
 
 % removes duplicates from a list
 set([], []).
@@ -47,31 +48,28 @@ compress([X], [X]).
 compress([X, X|Xs], Zs) :- compress([X|Xs], Zs).
 compress([X, Y|Ys], [X|Zs]) :- X \= Y, compress([Y|Ys], Zs).
 
-%packs a consequetive duplicates into sublists
-pack([], []).
-
 % transfer(X, Xs, Ys, Z)
 transfer(X, [], [], [X]).
 transfer(X, [Y|Ys], [Y|Ys], [X]) :- X \= Y.
 transfer(X, [X|Xs], Ys, [X|Zs]) :- transfer(X, Xs, Ys, Zs).
 
 % duplicates an element k times
-ns(X, [X], 1).
-ns(X, Y, K) :- K > 0, K1 is K - 1, append([X], Z, Y), ns(X, Z, K1).
+ns(X, 1, [X]).
+ns(X, K, Y) :- K > 0, K1 is K - 1, append([X], Z, Y), ns(X, K1, Z).
 
 % duplicates in packs
-dupl_in_packs([], []).
-dupl_in_packs([H|T], [H1|T1]) :- ns(H, H1, N), pack_dupl(T, T1).
+dupl_in_packs([], _, []).
+dupl_in_packs([H|T], N, [H1|T1]) :- ns(H, N, H1), dupl_in_packs(T, N, T1).
 
 % just duplicates the first element a given amount of times
-dupl([], []).
-dupl([H|T], R) :- append(X, Y, R), ns(H, X, 2),
-  dupl(T, Y).
+dupl([], _, []).
+dupl([H|T], N, R) :- append(X, Y, R), ns(H, N, X),
+  dupl(T, N, Y).
 
 % sublists of duplicates
-pack([],[]).
-pack([X|Xs],[Z|Zs]) :- transfer(X,Xs,Ys,Z),
-  pack(Ys,Zs).
+pack([], []).
+pack([X|Xs], [Z|Zs]) :- transfer(X, Xs, Ys, Z),
+  pack(Ys, Zs).
 
 % length encoding
 % encode([a, a, a, a, b, c, c, c], X)
@@ -101,24 +99,20 @@ strip([[N, X]|Ys], [[N, X]| Zs]) :- N > 1, strip(Ys, Zs).
 % decode run-length-encoding
 % [[2, a], [1, z], [2, topki]]] -> [a, a, z, topki, topli]
 decode([], []).
-decode([[N, X]|Xs], Ys) :- ns(X, Y, N),
+decode([[N, X]|Xs], Ys) :- ns(X, N, Y),
   append(Y, Gs, Ys), decode(Xs, Gs).
 
+% drop nth element
+drop_([], _, _, R).
+drop_([H|T], N, K, [H|R]) :- K mod N =\= 0, K1 is K + 1,
+  drop_(T, N, K1, R).
+drop_([_|T], N, K, R) :- K mod N =:= 0, K1 is K + 1,
+  drop_(T, N, K1, R).
+
+drop(L, N, R) :- drop_(L, N, 1, R).
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+% split a list (L1, N, R1, R2)
+split(L, 0, [], L).
+split([H|T], N, [H|R1], R2) :- N > 0, N1 is N - 1,
+  split(T, N1, R1, R2).
