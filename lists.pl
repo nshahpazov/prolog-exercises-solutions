@@ -59,13 +59,66 @@ transfer(X, [X|Xs], Ys, [X|Zs]) :- transfer(X, Xs, Ys, Zs).
 ns(X, [X], 1).
 ns(X, Y, K) :- K > 0, K1 is K - 1, append([X], Z, Y), ns(X, Z, K1).
 
-% sublists of duplicates
-sublist_dupl([], []).
-sublist_dupl([H|T], [H1|T1]) :- ns(H, H1, 2), sublist_dupl(T, T1).
+% duplicates in packs
+dupl_in_packs([], []).
+dupl_in_packs([H|T], [H1|T1]) :- ns(H, H1, N), pack_dupl(T, T1).
 
-%duplicates
+% just duplicates the first element a given amount of times
 dupl([], []).
-dupl([H|T], R) :- append(X, Y, R), ns(H, X, 3),
+dupl([H|T], R) :- append(X, Y, R), ns(H, X, 2),
   dupl(T, Y).
+
+% sublists of duplicates
+pack([],[]).
+pack([X|Xs],[Z|Zs]) :- transfer(X,Xs,Ys,Z),
+  pack(Ys,Zs).
+
+% length encoding
+% encode([a, a, a, a, b, c, c, c], X)
+% X = [[4, a], [1, b], [3, c]].
+
+% encode([], []).
+encode(L1, L2) :- pack(L1, L), encounters(L, L2).
+
+% takes the head of a list
+single([], []).
+single([H|_], H).
+
+% encounters how many times a sublist has its duplicates
+% for example [[a, a], [b ,b, b], X].
+% X = [2, a], [3, b].
+encounters([], []).
+encounters([H1|T1], [[H2, Y]|T2]) :- length(H1, H2),
+  single(H1, Y), encounters(T1, T2).
+
+encode_modified(L1, L2) :- encode(L1, L), strip(L, L2).
+
+% strips singles from lists of encounters
+strip([], []).
+strip([[1, X]|Ys], [X|Zs]) :- strip(Ys, Zs). % recursive
+strip([[N, X]|Ys], [[N, X]| Zs]) :- N > 1, strip(Ys, Zs).
+
+% decode run-length-encoding
+% [[2, a], [1, z], [2, topki]]] -> [a, a, z, topki, topli]
+decode([], []).
+decode([[N, X]|Xs], Ys) :- ns(X, Y, N),
+  append(Y, Gs, Ys), decode(Xs, Gs).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
