@@ -39,8 +39,8 @@ flatt([H|T], X) :- flatt(H, Y), flatt(T, Z),
 % removes duplicates from a list
 % can be optimized with H|T and without append and without if
 set([], []).
-set([H|T], X) :- not(member(H, T)) -> 
-    append([H], Y, X), set(T, Y) ; set(T, X).
+set([H|T], [H|R]) :- not(member(H, T)), set(T, R).
+set([H|T], R) :- member(H, T), set(T, R).
 
 % removes consequetive duplicates
 compress([], []).
@@ -54,20 +54,18 @@ transfer(X, [Y|Ys], [Y|Ys], [X]) :- X \= Y.
 transfer(X, [X|Xs], Ys, [X|Zs]) :- transfer(X, Xs, Ys, Zs).
 
 % duplicates an element k times
-% can be optimized with H|T and without append
-ns(X, 1, [X]).
-ns(X, K, Y) :- K > 0, K1 is K - 1,
-  append([X], Z, Y), ns(X, K1, Z).
+ns(_, 0, []).
+ns(H, K, [H|T]) :- K > 0, K1 is K - 1, ns(H, K1, T).
 
 % duplicates in packs
 dupl_in_packs([], _, []).
 dupl_in_packs([H|T], N, [H1|T1]) :- ns(H, N, H1), dupl_in_packs(T, N, T1).
 
 % just duplicates the first element a given amount of times
-% can be optimized not to use append and to use H|T
 dupl([], _, []).
 dupl([H|T], N, R) :- append(X, Y, R), ns(H, N, X),
   dupl(T, N, Y).
+
 
 % sublists of duplicates
 pack([], []).
@@ -88,7 +86,6 @@ single([H|_], H).
 % encounters how many times a sublist has its duplicates
 % for example [[a, a], [b ,b, b], X].
 % X = [2, a], [3, b].
-% can be optimized not to use single
 encounters([], []).
 encounters([H1|T1], [[H2, Y]|T2]) :- length(H1, H2),
   single(H1, Y), encounters(T1, T2).
@@ -112,11 +109,37 @@ drop_([H|T], N, K, [H|R]) :- K mod N =\= 0, K1 is K + 1,
   drop_(T, N, K1, R).
 drop_([_|T], N, K, R) :- K mod N =:= 0, K1 is K + 1,
   drop_(T, N, K1, R).
-
 drop(L, N, R) :- drop_(L, N, 1, R).
 
+% slice a list
+% slice(L, S, E, R).
+slice([], _, _, []).
+slice(_, 0, 0, []).
+slice([H|T1], 0, E, [H|T]) :- E1 is E - 1, slice(T1, 0, E1, T).
+slice([H|T1], N, E, T) :- N > 0, N1 is N - 1,
+  E1 is E - 1, slice(T1, N1, E1, T).
+
+% remove at index
+% rem(L, K, R).
+remove_at([], _, []).
+remove_at([H|T1], 0, R) :- remove_at(T1, -1, R).
+remove_at([H|T], N, [H|R]) :- N \= 0, N1 is N - 1,
+  remove_at(T, N1, R).
+
+% insert at a given position
+insert_at([], X, _, [X]).
+insert_at(T, H, 0, [H|T]).
+insert_at([X|Xs], Y, N, [X|Zs]) :- N > 0, N1 is N - 1,
+  insert_at(Xs, Y, N1, Zs).
 
 % split a list (L1, N, R1, R2)
 split(L, 0, [], L).
 split([H|T], N, [H|R1], R2) :- N > 0, N1 is N - 1,
   split(T, N1, R1, R2).
+
+% NOT IMPLEMENTED YET!!!
+% rotate a list to the left
+% rotate([1,2,3,4,5], -2, R).
+% R = [4, 5, 1, 2, 3].
+
+
