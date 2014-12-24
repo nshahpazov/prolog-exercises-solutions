@@ -1,6 +1,6 @@
 % finds out whether an element is in a list
-member(H, [H|_]). % bottom rule
-member(X, [_|T]) :- member(X, T).
+member(H, [H|T]). % bottom rule
+member(X, [H|T]) :- member(X, T).
 
 % appends two lists
 append([], X, X).
@@ -143,3 +143,8 @@ split([H|T], N, [H|R1], R2) :- N > 0, N1 is N - 1,
 % R = [4, 5, 1, 2, 3].
 
 
+% range(K, N, R)
+% R = [K, K + 1, K + 2,..., N].
+range(X, X, [X]).
+range(S, E, [S|T]) :- S \= E,
+  S1 is S + 1, range(S1, E, T).
