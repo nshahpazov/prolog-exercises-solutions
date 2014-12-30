@@ -15,7 +15,7 @@ lastbutone([H|[_|[]]], H).
 lastbutone([_|T], X) :- lastbutone(T, X).
 
 % finds the kth element of a list
-kth(H, [H|_], 0).
+kth(H, [H|_], 1).
 kth(X, [_|T], K) :- K > 0,
   K1 is K - 1, kth(X, T, K1).
 
@@ -141,10 +141,21 @@ split([H|T], N, [H|R1], R2) :- N > 0, N1 is N - 1,
 % rotate a list to the left
 % rotate([1,2,3,4,5], -2, R).
 % R = [4, 5, 1, 2, 3].
-
+%rotate[[], _, []].
+%rotate(L, 0, R) :- append(X, Y, R), 
+%  reverse(L, X), 
 
 % range(K, N, R)
 % R = [K, K + 1, K + 2,..., N].
 range(X, X, [X]).
 range(S, E, [S|T]) :- S \= E,
   S1 is S + 1, range(S1, E, T).
+
+% extract a given number of randomly selected elements
+
+rand_sublist(_, 0, []).
+rand_sublist(T, N, [X|M]) :- N > 0, N1 is N - 1,
+  len(T, L),
+  random_between(1, L, RAND),
+  kth(X, T, RAND),
+  rand_sublist(T, N1, M).
