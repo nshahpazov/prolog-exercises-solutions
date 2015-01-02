@@ -145,6 +145,10 @@ split([H|T], N, [H|R1], R2) :- N > 0, N1 is N - 1,
 %rotate(L, 0, R) :- append(X, Y, R), 
 %  reverse(L, X), 
 
+%=====================================================%
+%=====================================================%
+%=====================================================%
+
 % range(K, N, R)
 % R = [K, K + 1, K + 2,..., N].
 range(X, X, [X]).
@@ -152,10 +156,21 @@ range(S, E, [S|T]) :- S \= E,
   S1 is S + 1, range(S1, E, T).
 
 % extract a given number of randomly selected elements
-
+% for now its not a sublist of unique elements... must be :)
 rand_sublist(_, 0, []).
 rand_sublist(T, N, [X|M]) :- N > 0, N1 is N - 1,
   len(T, L),
   random_between(1, L, RAND),
   kth(X, T, RAND),
   rand_sublist(T, N1, M).
+
+% generates a list of numbers in range of M with length N
+random_select(0, _, []).
+random_select(N, M, [X|R]) :- N > 0, N1 is N - 1,
+  random_between(1, M, X),
+  random_select(N1,M, R ).
+
+% rand permutation of a list
+rand_perm([], []).
+rand_perm(L, R) :- len(L, LEN), rand_sublist(L, LEN, R).
+
