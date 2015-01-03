@@ -137,17 +137,12 @@ split(L, 0, [], L).
 split([H|T], N, [H|R1], R2) :- N > 0, N1 is N - 1,
   split(T, N1, R1, R2).
 
-% NOT IMPLEMENTED YET!!!
-% rotate a list to the left
+% rotate a list to the left (uses split procedure)
 % rotate([1,2,3,4,5], -2, R).
 % R = [4, 5, 1, 2, 3].
-%rotate[[], _, []].
-%rotate(L, 0, R) :- append(X, Y, R), 
-%  reverse(L, X), 
-
-%=====================================================%
-%=====================================================%
-%=====================================================%
+rotate([], _, []).
+rotate(L, N, R) :- length(L, N2), N1 is N2 + N,
+  append(Y, X, R), split(L, N1, X, Y).
 
 % range(K, N, R)
 % R = [K, K + 1, K + 2,..., N].
