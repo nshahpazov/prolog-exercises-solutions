@@ -175,11 +175,60 @@ el(X, [_|L], R) :- el(X, L, R).
 
 % combination(3, [a, b, c, d, e, f], L).
 % note: understand it well
-% L = [a, b, c]
-% L = [a, b, d]
-% L = [a, b, e]
+% L = [a, b, c], L = [a, b, d], ...
 combination(0, _, []).
 combination(K, L, [X|Xs]) :- K > 0,
   el(X, L, R), K1 is K - 1, combination(K1, R, Xs).
 
+% p27
+% a) In how many ways can a group of 9 people work in 3 disjoint subgroups of 2, 3 and 4 persons? Write a predicate that generates all the possibilities via backtracking.
 
+% select N but avoid permutations
+% selectN(N, L, R).
+
+% group3(G, G1, G2, G3) :-
+% not working right now
+group3(G,G1,G2,G3) :-
+  combination(2, G, G1),
+  subtract(G, G1, R1),
+  combination(3, R1, G2),
+  subtract(R1, G2, R2),
+  combination(4, R2, G3),
+  subtract(R2, G3, []).
+
+% makes a variations with X in front
+% put(a, [1, 2, 3, 4], R).
+% R = [[a, 1], [a, 2], [a, 3], [a, 4]]
+put(X, [], []).
+put(X, [H|T], [[X, H]|R]) :- put(X, T, R).
+
+% cartesian product
+cartesian([], _, []).
+cartesian([H1|T1], S2, R) :- put(H1, S2, R1),
+  cartesian(T1, S2, R2), append(R1, R2, R).
+
+% counts occurences of an element in a list
+count(_, [], 0).
+count(H, [H|T], N) :- count(H, T, N1), N is N1 + 1.
+count(H, [_|T], N) :- count(H, T, N).
+
+% find the fibonnaci nth element
+fibb(1, 0).
+fibb(2, 1).
+
+fibb(N, E) :- N >= 3,
+  N1 is N - 1,
+  N2 is N - 2,
+  fibb(N1, E1), fibb(N2, E2),
+  E is E1 + E2. % must be at the back because of the nesting  
+
+% generate the fibonacci sequence
+% not finished yet, not working right now
+fib_seq(1, [0]).
+fib_seq(2, [0, 1]).
+fib_seq(N, [X|T]) :- N > 0,
+  last(T, X1),
+  lastbutone(T, X2),
+  X is X1 + X2,
+  fib_seq(N1, T),
+  N is N1 + 1.
