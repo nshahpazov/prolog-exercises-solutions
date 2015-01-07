@@ -225,10 +225,12 @@ fibb(N, E) :- N >= 3,
 % generate the fibonacci sequence
 % not finished yet, not working right now
 fib_seq(1, [0]).
-fib_seq(2, [0, 1]).
-fib_seq(N, [X|T]) :- N > 0,
-  last(T, X1),
-  lastbutone(T, X2),
-  X is X1 + X2,
-  fib_seq(N1, T),
-  N is N1 + 1.
+fib_seq(2, [1, 0]).
+fib_seq(N, [F2, F1, F0|L]) :-
+  succ(N1, N),
+  fib_seq(N1, [F1, F0|L]),
+  plus(F0, F1, F2).
+
+fib_sequence(N, R) :- 
+  reverse(X, R),
+  fib_seq(N, X).
