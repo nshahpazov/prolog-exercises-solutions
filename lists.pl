@@ -169,3 +169,17 @@ random_select(N, M, [X|R]) :- N > 0, N1 is N - 1,
 rand_perm([], []).
 rand_perm(L, R) :- len(L, LEN), rand_sublist(L, LEN, R).
 
+% if X is element return the list
+el(X, [X|L], L).
+el(X, [_|L], R) :- el(X, L, R).
+
+% combination(3, [a, b, c, d, e, f], L).
+% note: understand it well
+% L = [a, b, c]
+% L = [a, b, d]
+% L = [a, b, e]
+combination(0, _, []).
+combination(K, L, [X|Xs]) :- K > 0,
+  el(X, L, R), K1 is K - 1, combination(K1, R, Xs).
+
+
