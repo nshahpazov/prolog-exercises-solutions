@@ -9,7 +9,7 @@ remove_at([H|T1], 0, R) :- remove_at(T1, -1, R).
 remove_at([H|T], N, [H|R]) :- N \= 0, N1 is N - 1,
   remove_at(T, N1, R).
 
-% ?- insert_at(alfa,[a,b,c,d],2,L).
+% ?- insert_at(alfa, [a,b,c,d],2, L).
 % L = [a, alfa, b, c, d]
 % insert at a given position
 insert_at([], X, _, [X]).
