@@ -15,17 +15,8 @@ kth(X, [_|T], K) :- K > 0,
 len([], 0).
 len([_|T], N) :- len(T, K), N is K + 1.
 
-% reverse a list
-rev([], []).
-rev([H|T], R) :- rev(T, Y), append(Y, [H], R).
-
 % finds out whether a list is palindrome
 palindrome(L) :- reverse(L, L).
-
-% split a list (L1, N, R1, R2)
-split(L, 0, [], L).
-split([H|T], N, [H|R1], R2) :- N > 0, N1 is N - 1,
-  split(T, N1, R1, R2).
 
 % extract a given number of randomly selected elements
 % for now its not a sublist of unique elements... must be :)
@@ -41,8 +32,3 @@ random_select(0, _, []).
 random_select(N, M, [X|R]) :- N > 0, N1 is N - 1,
   random_between(1, M, X),
   random_select(N1, M, R).
-
-% counts occurences of an element in a list
-count(_, [], 0).
-count(H, [H|T], N) :- count(H, T, N1), N is N1 + 1.
-count(H, [_|T], N) :- count(H, T, N).
