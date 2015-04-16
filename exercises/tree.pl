@@ -27,3 +27,9 @@ t(K, [A,B]) :- K1 is K - 1,
     ; make the two trees
     t(M, A),
     t(N, B).
+
+sorted([]).
+sorted([_]).
+sorted([A, B|T]) :-
+    less(A, B),
+    sorted([B|T]).
