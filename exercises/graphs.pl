@@ -17,7 +17,8 @@ _path(G, B, B, V, V). ; bottom of the search (found)
 _path(G, A, B, P, V) :-
     arc(G, A, C),
     not(member(C, V)),
-    _path(G, C, B, P, [C|V]). ; add C to visited and continue with !existing another C for which ...
+    ; add C to visited and continue with !existing another C for which ...
+    _path(G, C, B, P, [C|V]).
 
 ; public procedure which uses the _path procedure
 path(G, A, B, P) :-
