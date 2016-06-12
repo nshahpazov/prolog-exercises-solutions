@@ -1,5 +1,3 @@
-% numbers generators
-
 % generate natular numbers
 e(0).
 e(N) :- e(M), N is M + 1.
