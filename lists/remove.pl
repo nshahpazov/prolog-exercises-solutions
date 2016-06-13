@@ -1,4 +1,4 @@
 % remove an element from a list
-remove_([], _, []).
-remove_([X|XS], X, XS).
-remove_([X|XS], Y, [X|KS]) :- Y \= X, remove_(XS, Y, KS).
+remove([], _, []).
+remove([X|XS], X, XS).
+remove([X|XS], Y, [X|KS]) :- Y \= X, remove(XS, Y, KS).

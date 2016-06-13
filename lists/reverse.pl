@@ -1,5 +1,3 @@
-% reverse a list in prolog
-
-rev([], []).
-rev([H|T], R) :- rev(T, Y),
+reverse_([], []).
+reverse_([H|T], R) :- reverse_(T, Y),
     append(Y, [H], R).
