@@ -10,5 +10,3 @@ encode_one([[X1|X1s]|Xs], [[X1, Y]|Zs]) :- length([X1|X1s], Y),
 
 encode([], []).
 encode(Xs, Zs) :- pack(Xs, Ys), encode_one(Ys, Zs).
-
-encodex()
