@@ -1,25 +1,3 @@
-% generate natular numbers
-e(0).
-e(N) :- e(M), N is M + 1.
-
-% generate real numbers
-z(X) :- e(E), member(Z, [-1, 1]),
-  X is E * Z.
-
-% generate a subsequence
-betw(A, A, B) :- A =< B.
-betw(X, A, B) :- A < B,
-    A1 is A + 1, betw(X, A1, B).
-
-/* between_(I,J,K) is true if K is an integer between I and J inclusive.    */
-between_(I,J,I) :- I =< J.
-between_(I,J,K) :- I < J, I1 is I+1, between_(I1,J,K).
-
-fib(X) :- fib(X, _).
-fib(0, 1).
-fib(F2, F3) :- fib(F1, F2),
-    F3 is F1 + F2.
-
 % generate x =  x1^2 + x2^2 + x3^2 + x4^2
 p(X) :-
         between(X1, 0, 32),
@@ -48,7 +26,3 @@ subl([First|Rest], [First|Sub]) :-
 
 subl([_|Rest], Sub) :-
     subl(Rest, Sub).
-
-
-
-
