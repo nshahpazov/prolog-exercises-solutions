@@ -65,3 +65,28 @@ ssort([X|Xs], L) :- min(X, L), remove(X, L, L1), ssort(Xs, L1).
 
 % just a quickie sort
 % split(L, X, A, B)
+split([], _, [], []).
+split([H|T], X, [H|A], B) :- H < X, split(T, X, A, B).
+split([H|T], X, A, [H|B]) :- not(H < X), split(T, X, A, B).
+
+qs([], []).
+qs([H|T], R) :- split(T, H, R1, R2),
+                qs(R1, S1),
+                qs(R2, S2),
+                append(S1, [H|S2], R).
+
+% binary trees
+% []
+% [L, T, R]
+
+add(X, [], [[], X, []]).
+add(X, [T1, Y, _]) :- X < Y, add(X, T1).
+add(X, [_, Y, T2]) :- not(X < Y), add(X, T2).
+
+maketree([H|T], [])
+maketree([H|T], R) :- add()
+
+maketree([X|Xs], R) :- maketree(Xs, Y),
+                       add(H, Y, R).
+
+tsort(L, S) :- maketree(L, T), ltr(T, S).
