@@ -139,4 +139,25 @@ fibonacci_(0, 1).
 fibonacci_(Y, Z) :- fibonacci_(X, Y), Z is X + Y.
 fibonacci(N) :- fibonacci_(N, _).
 
-% todo: must understand reverse with stack, subsets, and this crazy fibonacci thing
+% todo: must understand reverse with stack and subsets
+
+
+% a(0) = a(1) = a(2) = 1
+% a(n + 3) = 2*a(n) + a(n + 1) + 0* a(n)
+% a(n), a(n+1), a(n+2), a(n+3xxx`)
+a(1, 1, 1).
+a(Y, Z, T) :- a(X, Y, Z), T is 2 * X + Y + Z.
+
+% wrong way, it's never going to stop
+n10_wrong(X) :- natural(X), X < 3.
+
+n100(X) :- between(X, 0, 99).
+
+between(A, A, B) :- A =< B.
+between(X, A, B) :- A < B,
+                    A1 is A + 1,
+                    between(X, A1, B).
+
+pairs(X, Y) :- natural(S),
+               between(X, 0, S),
+               Y is S - X.
