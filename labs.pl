@@ -161,3 +161,110 @@ between(X, A, B) :- A < B,
 pairs(X, Y) :- natural(S),
                between(X, 0, S),
                Y is S - X.
+
+% p1000 :- generates all natural numbers less than 1000 which are sums of squares of 4 natural numbers
+p1000(X) :- between(X1, 0, 32),
+            between(X2, 0, 32),
+            between(X3, 0, 32),
+            between(X4, 0, 32),
+            X is X1 * X1 + X2 * X2 + X3 * X3 + X4 * X4,
+            X < 1000.
+
+% or just this solution
+p1000_(X) :- between(X, 0, 999).
+
+
+%%%%%%%%%%%%%%%%%%%% 02.11.16 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% tree structure generator
+% [] - tree
+% [A, B] - tree when A and B are trees
+tree(T) :- natural(N), tree(T, N).
+
+tree([], 0).
+tree([A, B], N) :- N > 0,
+                   N1 is N - 1,
+                   between(K, 0, N1),
+                   M is N1 - K,
+                   tree(A, K),
+                   tree(B, M).
+
+% cartesian(L, X ~ [[a,b,c,d], [1,2,3,4]]) :- generates in L all the possible cartesian producsts of X
+cartesian([], []).
+cartesian([H|T], [L1|Ls]) :- member(H, L1), cartesian(T, Ls).
+
+% list_of_sum(S, L) :- genrates in L the members whih form a sum in S
+list_of_sum(0, []).
+list_of_sum(S, [H|T]) :- between(H, 1, S),
+                         M is S - H,
+                         list_of_sum(M, T).
+
+
+
+% split(L, M) :- concat(M) = L where L is list of lists
+split([], []).
+split(L, [H|T]) :- append(H, R, L),
+                    H \= [],
+                   split(R, T).
+
+% generate in X1, Y1 coordinates of points in (Circle X, Y, Radius) - solve by yourself
+%% in_circle(X, Y, R, X1, Y1).
+
+% knight moves generation
+% knight(X, Y, P) :- P is path so far, [X, Y] is start
+
+% generates all possible moves from given position
+
+% check whether a coordinate is inside the allowed dimension
+in(Coord) :- Coord >= 1, Coord =< 8.
+
+% move(X, Y, X1, Y1) :- [X, Y] - where it is, [X1, Y1] - generated values:
+move(X, Y, X1, Y1) :- X1 is X - 1,
+                      in(X1),
+                      Y1 is Y - 2,
+                      in(Y1).
+
+move(X, Y, X1, Y1) :- X1 is X - 1,
+                      in(X1),
+                      Y1 is Y + 2,
+                      in(Y1).
+
+move(X, Y, X1, Y1) :- X1 is X + 1,
+                      in(X1),
+                      Y1 is Y - 2,
+                      in(Y1).
+
+move(X, Y, X1, Y1) :- X1 is X + 1,
+                      in(X1),
+                      Y1 is Y + 2,
+                      in(Y1).
+
+move(X, Y, X1, Y1) :- X1 is X - 2,
+                      in(X1),
+                      Y1 is Y - 1,
+                      in(Y1).
+
+move(X, Y, X1, Y1) :- X1 is X - 2,
+                      in(X1),
+                      Y1 is Y + 1,
+                      in(Y1).
+
+move(X, Y, X1, Y1) :- X1 is X + 2,
+                      in(X1),
+                      Y1 is Y - 1,
+                      in(Y1).
+
+move(X, Y, X1, Y1) :- X1 is X + 2,
+                      in(X1),
+                      Y1 is Y + 1,
+                      in(Y1).
+
+knight(X, Y, P) :- dfs(X, Y, [[X, Y]], P).
+
+% (X, Y) is start, V are visited, P is the path so far
+% length has to be 64 since we want the knight to go through all the positions on the board
+dfs(_, _, Visited, Visited) :- length(Visited, 64).
+dfs(X, Y, V, P) :- move(X, Y, X1, Y1),
+                   not(member([X1, Y1], V)),
+                   % append (X1, Y1) in front of the visited list
+                   dfs(X1, Y1, [[X1, Y1]|V], P).
