@@ -268,3 +268,56 @@ dfs(X, Y, V, P) :- move(X, Y, X1, Y1),
                    not(member([X1, Y1], V)),
                    % append (X1, Y1) in front of the visited list
                    dfs(X1, Y1, [[X1, Y1]|V], P).
+
+% common prime denominators
+% cpd(X, Y).
+
+% X is divisor of Y
+diviseur(X, Y) :- Y mod X =:= 0.
+
+prime(P) :- P1 is P - 1,
+            not((
+              between(X, 2, P1),
+              diviseur(X, P)
+            )).
+
+prime_divisors(P, X) :- between(P, 2, X),
+                        prime(P),
+                        diviseur(P, X).
+
+ds(X, Y) :- not((
+              prime_divisors(P, X),
+              not(diviseur(P ,Y))
+            )).
+
+cpd(X, Y) :- ds(X, Y), ds(Y, X).
+
+path_(_, X, X, V, P) :- reverse([X|V], P).
+path_(Graph, X, Y, V, P) :- arc(Graph, X, T),
+                        not(member(T, V)),
+                        path_(Graph, T, Y, [X|V], P).
+path(Graph, X, Y, P) :- path_(Graph, X, Y, [], P).
+
+% graphs - path and connected
+connected([V, E]) :- not((
+                        member(X, V),
+                        member(Y, V),
+                        not((path([V, E], X, Y, _) ; path([V, E], Y, X, _)))
+                      )).
+
+arc([_, E], X, Y) :- member([X, Y], E).
+
+% spanning tree(Graph, Visited, N, E, R).
+% prim algorithm
+stree(G, V, [], E, E).
+stree([V1, E1], V, N, E, R) :- member(X, V),
+                               member(Y, N),
+                               arc([V1, E1], X, Y),
+                               remove(Y, N, N1),
+                               stree([V1, E1], [Y|V], [[X,Y]|E], R).
+
+graph([[a, b, c, d, e], [[a, b], [b, c], [c, d], [d, e]]]).
+
+
+
+
