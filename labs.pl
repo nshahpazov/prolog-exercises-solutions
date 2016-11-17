@@ -308,16 +308,23 @@ connected([V, E]) :- not((
 arc([_, E], X, Y) :- member([X, Y], E).
 
 % spanning tree(Graph, Visited, N, E, R).
-% prim algorithm
-stree(G, V, [], E, E).
-stree([V1, E1], V, N, E, R) :- member(X, V),
-                               member(Y, N),
-                               arc([V1, E1], X, Y),
-                               remove(Y, N, N1),
-                               stree([V1, E1], [Y|V], [[X,Y]|E], R).
+% not finished
+%% stree(G, V, [], E, E).
+%% stree([V1, E1], V, N, E, R) :- member(X, V),
+%%                                member(Y, N),
+%%                                arc([V1, E1], X, Y),
+%%                                remove(Y, N, N1),
+%%                                stree([V1, E1], [Y|V], [[X,Y]|E], R).
 
 graph([[a, b, c, d, e], [[a, b], [b, c], [c, d], [d, e]]]).
 
+isList([]).
+isList([_|_]).
+flatten([], []).
+flatten([L|Ls], F) :- isList(L),
+                      flatten(L, FL),
+                      flatten(Ls, FLs),
+                      append(FL, FLs, F).
 
-
-
+flatten([H|Ls], [H|F]) :- not(isList(H)),
+                          flatten(Ls, F).
