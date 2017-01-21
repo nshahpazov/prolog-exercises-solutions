@@ -1,3 +1,6 @@
+% helper for cleaning the console
+clear() :- format('~c~s', [0x1b, "[2J"]).
+
 member(H, [H|_]).
 member(X, [_|T]) :- member(X, T).
 
@@ -28,7 +31,6 @@ insert(X, [H|T], [H|N]) :- insert(X, T, N).
 % removes X from L to get N
 remove(X, L, N) :- insert(X, N, L).
 
-
 % permutation(P, L) - P is a permutation of L
 permutation([], []).
 permutation([H|T], L) :- member(H, L),
@@ -36,8 +38,8 @@ permutation([H|T], L) :- member(H, L),
                          permutation(T, L1).
 
 % todo: understand this one
-% subset([], _).
-%s ubset([H|S], L) :- append(_, [H|T], L), subset(S, T).
+subset([], _).
+subset([H|S], L) :- append(_, [H|T], L), subset(S, T).
 
 % predicate to check whether a list is sorted
 less(A, B) :- not(B < A).
@@ -91,7 +93,10 @@ maketree([], []).
 maketree([X|Xs], R) :- maketree(Xs, Y),
                        add(X, Y, R).
 
-ltr([L, T, R], A) :- ltr(L, Ls), ltr(R, Rs), append(Ls, [T|Rs], A).
+ltr([L, T, R], A) :- ltr(L, Ls),
+                      ltr(R, Rs),
+                      append(Ls, [T|Rs], A).
+
 tsort(L, S) :- maketree(L, T), ltr(T, S).
 
 reverse([], []).
@@ -138,9 +143,6 @@ even(X) :-  even(X1), X is X1 + 2.
 fibonacci_(0, 1).
 fibonacci_(Y, Z) :- fibonacci_(X, Y), Z is X + Y.
 fibonacci(N) :- fibonacci_(N, _).
-
-% todo: must understand reverse with stack and subsets
-
 
 % a(0) = a(1) = a(2) = 1
 % a(n + 3) = 2*a(n) + a(n + 1) + 0* a(n)
