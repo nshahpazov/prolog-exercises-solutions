@@ -201,7 +201,8 @@ list_of_sum(S, [H|T]) :- between(H, 1, S),
                          M is S - H,
                          list_of_sum(M, T).
 
-
+list_of_sums_of_size(N, S, X) :- list_of_sum(S, X),
+                                 length(X, N).
 
 % split(L, M) :- concat(M) = L where L is list of lists
 split([], []).
